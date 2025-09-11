@@ -12,9 +12,9 @@ def load_data():
     df.columns = df.columns.str.strip()
     return df
 
-st.title("🔎 Status zamówienia")
+st.title("🔎 Status of Orders")
 
-order_id = st.text_input("Wpisz numer zamówienia (SO / Client PO):")
+order_id = st.text_input("Please text number of your PO (SO / Client PO):")
 
 if order_id:
     df = load_data()
@@ -24,8 +24,9 @@ if order_id:
         (df["Client PO"].astype(str) == order_id)
     ]
     if not results.empty:
-        st.success("✅ Zamówienie znalezione")
+        st.success("✅ Order found")
         st.dataframe(results)  # pokazuje tylko dane tego zamówienia
     else:
 
-        st.warning("❌ Nie znaleziono zamówienia")
+        st.warning("❌ No order found")
+
