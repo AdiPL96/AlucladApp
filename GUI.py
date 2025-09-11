@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 # Wczytaj plik Excela (tylko Ty go masz, klient nie widzi)
-EXCEL_FILE = r"E:\ACL Operation\1. Deliveries\5. Project Cordination\5. Data Analytics\Power Bi Projects\1. PB2401 Client Information\Client Information - Copy.xlsx"
+EXCEL_FILE = "Client Information - Copy.xlsx"
 SHEET_NAME = "CRM_main"
 
 @st.cache_data
@@ -27,4 +27,5 @@ if order_id:
         st.success("✅ Zamówienie znalezione")
         st.dataframe(results)  # pokazuje tylko dane tego zamówienia
     else:
+
         st.warning("❌ Nie znaleziono zamówienia")
