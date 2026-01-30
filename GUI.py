@@ -15,8 +15,9 @@ EXCEL_FILE = r"Client Information"
 SHEET_NAME = "CRM_main"
 
 # --- INIT FILE ---
-if not os.path.exists(DATA_FILE):
-    pd.DataFrame(columns=["order_id", "status", "timestamp"]).to_csv(DATA_FILE, index=False)
+if not os.path.exists(EXCEL_FILE):
+    df = pd.DataFrame(columns=["order_id", "status", "timestamp"])
+    df.to_excel(EXCEL_FILE, sheet_name=SHEET_NAME, index=False)
 
 def load_data():
     return pd.read_excel(EXCEL_FILE, sheet_name=SHEET_NAME)
@@ -83,5 +84,6 @@ if order_id:
                 st.experimental_rerun()
     else:
         st.info("Order not found")
+
 
 
