@@ -144,51 +144,52 @@ if order_id:
     # wczytujemy również podstawowe info o zamówieniu
    order_info = get_order_info(order_id)
 
-if order_info is not None:
-    project = order_info.get("Project", "")
-    materials = order_info.get("Materials", "")
-    delivery_address = order_info.get("Delivery Adress", "")
+    if order_info is not None:
+        project = order_info.get("Project", "")
+        materials = order_info.get("Materials", "")
+        delivery_address = order_info.get("Delivery Adress", "")
 
-    st.markdown(
-        f"**Project:** {project} | "
-        f"**Materials:** {materials} | "
-        f"**Delivery Address:** {delivery_address}"
+        st.markdown(
+            f"**Project:** {project} | "
+            f"**Materials:** {materials} | "
+            f"**Delivery Address:** {delivery_address}"
     )
 
 
-    if not history.empty:
-        history["timestamp"] = pd.to_datetime(history["timestamp"])
-        current_status = history.iloc[-1]["status"]
-        current_index = STATUS_FLOW.index(current_status)
+        if not history.empty:
+            history["timestamp"] = pd.to_datetime(history["timestamp"])
+            current_status = history.iloc[-1]["status"]
+            current_index = STATUS_FLOW.index(current_status)
 
-        st.subheader("Status timeline")
+            st.subheader("Status timeline")
 
-        status_times = {}
-        for status in STATUS_FLOW:
-            ts_rows = history[history["status"] == status]
-            status_times[status] = ts_rows.iloc[-1]["timestamp"] if not ts_rows.empty else None
+            status_times = {}
+            for status in STATUS_FLOW:
+                ts_rows = history[history["status"] == status]
+                status_times[status] = ts_rows.iloc[-1]["timestamp"] if not ts_rows.empty else None
 
-        # timeline jak InPost
-        for i, status in enumerate(STATUS_FLOW):
-            ts = status_times[status]
-            ts_str = ts.strftime("%Y-%m-%d %H:%M") if ts is not None else ""
+            # timeline jak InPost
+            for i, status in enumerate(STATUS_FLOW):
+                ts = status_times[status]
+                ts_str = ts.strftime("%Y-%m-%d %H:%M") if ts is not None else ""
 
-            if i < current_index:
-                st.markdown(f"✅ **{status}** - _{ts_str}_")
-            elif i == current_index:
-                st.markdown(f"🔵 **{status}** _(current)_ - _{ts_str}_")
-            else:
-                st.markdown(f"⚪ {status} - _{ts_str}_")
+                if i < current_index:
+                    st.markdown(f"✅ **{status}** - _{ts_str}_")
+                elif i == current_index:
+                    st.markdown(f"🔵 **{status}** _(current)_ - _{ts_str}_")
+                else:
+                    st.markdown(f"⚪ {status} - _{ts_str}_")
 
-        # przycisk do zmiany statusu
-        next_status = STATUS_FLOW[current_index + 1] if current_index + 1 < len(STATUS_FLOW) else None
-        if next_status:
-            if st.button(f"➡️ Move to '{next_status}'", key=f"move_btn_{order_id}_{next_status}"):
-                save_status(order_id, next_status)
-                st.experimental_rerun()
+            # przycisk do zmiany statusu
+            next_status = STATUS_FLOW[current_index + 1] if current_index + 1 < len(STATUS_FLOW) else None
+            if next_status:
+                if st.button(f"➡️ Move to '{next_status}'", key=f"move_btn_{order_id}_{next_status}"):
+                    save_status(order_id, next_status)
+                    st.experimental_rerun()
     
         else:
             st.info("Order not found")
+
 
 
 
