@@ -33,11 +33,33 @@ def load_data():
     # normalizacja nazw kolumn
     df.columns = df.columns.str.strip().str.lower()
 
-    if "order_id" not in df.columns:
+    # możliwe warianty kolumny order_id
+    ORDER_ID_ALIASES = {
+        "order_id",
+        "order id",
+        "orderid",
+        "id",
+        "order number",
+        "order_number",
+    }
+
+    # znajdź kolumnę z order_id
+    matched_column = None
+    for col in df.columns:
+        if col.replace("_", " ") in ORDER_ID_ALIASES:
+            matched_column = col
+            break
+
+    if not matched_column:
         raise ValueError(
-            f"Brak kolumny 'order_id'. Dostępne kolumny: {df.columns.tolist()}"
+            f"Brak kolumny order_id. Dostępne kolumny: {df.columns.tolist()}"
         )
 
+    # ujednolicenie nazwy
+    if matched_column != "order_id":
+        df = df.rename(columns={matched_column: "order_id"})
+
+    # normalizacja danych
     df["order_id"] = df["order_id"].apply(normalize_order_id)
 
     return df
@@ -107,6 +129,7 @@ if order_id:
                 st.experimental_rerun()
     else:
         st.info("Order not found")
+
 
 
 
