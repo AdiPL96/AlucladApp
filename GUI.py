@@ -5,7 +5,7 @@ import os
 
 STATUS_FLOW = [
     "Add to Production",
-    "In Production",
+    "In production",
     "In PPC",
     "Transit",
     "Delivered"
@@ -129,6 +129,7 @@ if order_id:
                 st.experimental_rerun()
     else:
         st.info("Order not found")
+
 
 
 
