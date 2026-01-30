@@ -14,16 +14,24 @@ STATUS_FLOW = [
 EXCEL_FILE = r"Client Information.xlsx"
 SHEET_NAME = "CRM_main"
 
+# --- UTILS ---
+def normalize_order_id(order_id):
+    return str(order_id).strip().upper()
+
 # --- INIT FILE ---
 if not os.path.exists(EXCEL_FILE):
     df = pd.DataFrame(columns=["order_id", "status", "timestamp"])
     df.to_excel(EXCEL_FILE, sheet_name=SHEET_NAME, index=False)
 
 def load_data():
-    return pd.read_excel(EXCEL_FILE, sheet_name=SHEET_NAME)
+    df = pd.read_excel(EXCEL_FILE, sheet_name=SHEET_NAME, dtype={"order_id": str})
+    df["order_id"] = df["order_id"].astype(str).str.strip().str.upper()
+    return df
 
 def save_status(order_id, status):
     df = load_data()
+
+    order_id = normalize_order_id(order_id)
 
     new_row = {
         "order_id": order_id,
@@ -32,11 +40,11 @@ def save_status(order_id, status):
     }
 
     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
-
     df.to_excel(EXCEL_FILE, sheet_name=SHEET_NAME, index=False)
 
 def get_order_history(order_id):
     df = load_data()
+    order_id = normalize_order_id(order_id)
     return df[df["order_id"] == order_id]
 
 def get_current_status(order_id):
@@ -48,7 +56,8 @@ def get_current_status(order_id):
 # --- UI ---
 st.title("📦 Order Status Tracker")
 
-order_id = st.text_input("Order ID")
+raw_order_id = st.text_input("Order ID")
+order_id = normalize_order_id(raw_order_id)
 
 if st.button("Create Order"):
     if order_id:
@@ -84,6 +93,7 @@ if order_id:
                 st.experimental_rerun()
     else:
         st.info("Order not found")
+
 
 
 
