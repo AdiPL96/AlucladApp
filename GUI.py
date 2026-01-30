@@ -111,12 +111,12 @@ if order_id:
         st.subheader("Status timeline")
 
 # bierzemy ostatni timestamp dla każdego statusu
-status_times = (
-    st.dataframe(history)
-    .groupby("status")["timestamp"]
-    .last()
-    .to_dict()
-)
+        status_times = (
+            history
+            .groupby("status")["timestamp"]
+            .last()
+            .to_dict()
+        )
 
 for i, status in enumerate(STATUS_FLOW):
     ts = status_times.get(status)
@@ -146,6 +146,7 @@ for i, status in enumerate(STATUS_FLOW):
                 st.experimental_rerun()
         else:
             st.info("Order not found")
+
 
 
 
