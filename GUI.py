@@ -122,12 +122,16 @@ if order_id:
 
         # Wyświetlamy statusy w drzewku
         for i, status in enumerate(STATUS_FLOW):
-            if i < current_index:
-                st.markdown(f"✅ **{status}**")
-            elif i == current_index:
-                st.markdown(f"🔵 **{status}** _(current)_")
-            else:
-                st.markdown(f"⚪ {status}")
+            ts = status_times.get(status)
+            timestamp_str = ts.strftime("%Y-%m-%d %H:%M") if ts is not None else ""
+    
+        if i < current_index:
+            st.markdown(f"✅ **{status}** - _{timestamp_str}_")
+        elif i == current_index:
+            st.markdown(f"🔵 **{status}** _(current)_ - _{timestamp_str}_")
+        else:
+            st.markdown(f"⚪ {status}")
+
 
         # Przygotowanie przycisku do przejścia do następnego statusu
         next_status = (
@@ -144,6 +148,7 @@ if order_id:
     
         else:
             st.info("Order not found")
+
 
 
 
