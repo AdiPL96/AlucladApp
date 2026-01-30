@@ -61,6 +61,7 @@ def load_data():
 
     # normalizacja danych
     df["order_id"] = df["order_id"].apply(normalize_order_id)
+    df["timestamp"] = pd.to_datetime(df["timestamp"], errors="coerce")
 
     return df
 
@@ -109,13 +110,29 @@ if order_id:
 
         st.subheader("Status timeline")
 
-        for i, status in enumerate(STATUS_FLOW):
-            if i < current_index:
-                st.markdown(f"✅ **{status}**")
-            elif i == current_index:
-                st.markdown(f"🔵 **{status}** _(current)_")
-            else:
-                st.markdown(f"⚪ {status}")
+# bierzemy ostatni timestamp dla każdego statusu
+status_times = (
+    history
+    .groupby("status")["timestamp"]
+    .last()
+    .to_dict()
+)
+
+for i, status in enumerate(STATUS_FLOW):
+    ts = status_times.get(status)
+
+    ts_str = (
+        ts.strftime("%d/%m/%Y %H:%M")
+        if pd.notna(ts)
+        else ""
+    )
+
+    if i < current_index:
+        st.markdown(f"✅ *{status}* {ts_str}")
+    elif i == current_index:
+        st.markdown(f"🔵 *{status}* {ts_str} (current)")
+    else:
+        st.markdown(f"⚪ {status}")
 
         next_status = (
             STATUS_FLOW[current_index + 1]
@@ -129,6 +146,7 @@ if order_id:
                 st.experimental_rerun()
     else:
         st.info("Order not found")
+
 
 
 
