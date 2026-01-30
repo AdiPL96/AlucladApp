@@ -144,8 +144,9 @@ for i, status in enumerate(STATUS_FLOW):
             if st.button(f"➡️ Move to '{next_status}'"):
                 save_status(order_id, next_status)
                 st.experimental_rerun()
-    else:
-        st.info("Order not found")
+        else:
+            st.info("Order not found")
+
 
 
 
