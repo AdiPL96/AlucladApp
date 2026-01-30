@@ -144,16 +144,16 @@ if order_id:
     # wczytujemy również podstawowe info o zamówieniu
    order_info = get_order_info(order_id)
 
-    if order_info is not None:
-        project = order_info.get("Project", "")
-        materials = order_info.get("Materials", "")
-        delivery_address = order_info.get("Delivery Adress", "")
+        if order_info is not None:
+            project = order_info.get("Project", "")
+            materials = order_info.get("Materials", "")
+            delivery_address = order_info.get("Delivery Adress", "")
 
-        st.markdown(
-            f"**Project:** {project} | "
-            f"**Materials:** {materials} | "
-            f"**Delivery Address:** {delivery_address}"
-    )
+            st.markdown(
+                f"**Project:** {project} | "
+                f"**Materials:** {materials} | "
+                f"**Delivery Address:** {delivery_address}"
+            )
 
 
         if not history.empty:
@@ -189,6 +189,7 @@ if order_id:
     
         else:
             st.info("Order not found")
+
 
 
 
