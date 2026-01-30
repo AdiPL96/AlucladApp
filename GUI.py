@@ -101,7 +101,7 @@ if st.button("Create Order"):
         save_status(order_id, STATUS_FLOW[0])
         st.success("Order created")
 
-status_times = {}  # na początek pusty słownik
+status_times = {}  # zawsze zdefiniowane
 
 if order_id:
     history = get_order_history(order_id)
@@ -110,21 +110,21 @@ if order_id:
         # upewniamy się, że timestamp jest datetime
         history["timestamp"] = pd.to_datetime(history["timestamp"])
 
+        # ostatni status
         current_status = history.iloc[-1]["status"]
         current_index = STATUS_FLOW.index(current_status)
 
         st.subheader("Status timeline")
 
-        # bierzemy ostatni timestamp dla każdego statusu
+        # przypisujemy ostatni timestamp dla każdego statusu
         for status in STATUS_FLOW:
             ts_rows = history[history["status"] == status]
             if not ts_rows.empty:
-                # bierzemy ostatni timestamp dla tego statusu
                 status_times[status] = ts_rows.iloc[-1]["timestamp"]
             else:
                 status_times[status] = None
 
-        # wyświetlamy timeline z timestamp
+        # rysujemy timeline jak InPost
         for i, status in enumerate(STATUS_FLOW):
             ts = status_times[status]
             ts_str = ts.strftime("%Y-%m-%d %H:%M") if ts is not None else ""
@@ -139,12 +139,14 @@ if order_id:
         # przycisk do przejścia do następnego statusu
         next_status = STATUS_FLOW[current_index + 1] if current_index + 1 < len(STATUS_FLOW) else None
         if next_status:
+            # unikalny key = order_id + next_status
             if st.button(f"➡️ Move to '{next_status}'", key=f"move_btn_{order_id}_{next_status}"):
                 save_status(order_id, next_status)
                 st.experimental_rerun()
     
         else:
             st.info("Order not found")
+
 
 
 
