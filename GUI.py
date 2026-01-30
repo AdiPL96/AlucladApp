@@ -24,8 +24,22 @@ if not os.path.exists(EXCEL_FILE):
     df.to_excel(EXCEL_FILE, sheet_name=SHEET_NAME, index=False)
 
 def load_data():
-    df = pd.read_excel(EXCEL_FILE, sheet_name=SHEET_NAME, dtype={"order_id": str})
-    df["order_id"] = df["order_id"].astype(str).str.strip().str.upper()
+    df = pd.read_excel(
+        EXCEL_FILE,
+        sheet_name=SHEET_NAME,
+        dtype=str
+    )
+
+    # normalizacja nazw kolumn
+    df.columns = df.columns.str.strip().str.lower()
+
+    if "order_id" not in df.columns:
+        raise ValueError(
+            f"Brak kolumny 'order_id'. Dostępne kolumny: {df.columns.tolist()}"
+        )
+
+    df["order_id"] = df["order_id"].apply(normalize_order_id)
+
     return df
 
 def save_status(order_id, status):
@@ -93,6 +107,7 @@ if order_id:
                 st.experimental_rerun()
     else:
         st.info("Order not found")
+
 
 
 
