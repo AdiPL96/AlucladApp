@@ -112,7 +112,7 @@ if order_id:
 
 # bierzemy ostatni timestamp dla każdego statusu
 status_times = (
-    history
+    .history()
     .groupby("status")["timestamp"]
     .last()
     .to_dict()
@@ -146,6 +146,7 @@ for i, status in enumerate(STATUS_FLOW):
                 st.experimental_rerun()
         else:
             st.info("Order not found")
+
 
 
 
