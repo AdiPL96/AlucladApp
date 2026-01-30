@@ -79,6 +79,41 @@ def save_status(order_id, status):
     df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
     df.to_excel(EXCEL_FILE, sheet_name=SHEET_NAME, index=False)
 
+def get_order_info(order_id):
+    """
+    Zwraca słownik z podstawowymi informacjami o zamówieniu: 
+    Project, Materials, Delivery Adress.
+    """
+    df = pd.read_excel(EXCEL_FILE, sheet_name=SHEET_NAME, dtype=str)
+    
+    # normalizacja kolumny order_id
+    df.columns = df.columns.str.strip().str.lower()
+    
+    # wyszukiwanie kolumny order_id
+    matched_column = None
+    for col in df.columns:
+        if col.replace("_", " ") in {"order_id", "order id", "orderid", "id"}:
+            matched_column = col
+            break
+    if not matched_column:
+        raise ValueError(f"Brak kolumny order_id w Excelu: {df.columns.tolist()}")
+    if matched_column != "order_id":
+        df = df.rename(columns={matched_column: "order_id"})
+    
+    # normalizacja wartości
+    df["order_id"] = df["order_id"].apply(normalize_order_id)
+    
+    # filtrujemy po order_id
+    row = df[df["order_id"] == order_id]
+    if not row.empty:
+        # zwracamy słownik z interesującymi kolumnami
+        return {
+            "Project": row.iloc[0].get("project", ""),
+            "Materials": row.iloc[0].get("materials", ""),
+            "Delivery Adress": row.iloc[0].get("delivery adress", "")
+        }
+    return None
+
 def get_order_history(order_id):
     df = load_data()
     order_id = normalize_order_id(order_id)
@@ -154,6 +189,7 @@ if order_info is not None:
     
         else:
             st.info("Order not found")
+
 
 
 
