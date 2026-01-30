@@ -101,6 +101,8 @@ if st.button("Create Order"):
         save_status(order_id, STATUS_FLOW[0])
         st.success("Order created")
 
+status_times = {}  # <-- zawsze definiujemy zmienną
+
 if order_id:
     history = get_order_history(order_id)
 
@@ -110,7 +112,7 @@ if order_id:
 
         st.subheader("Status timeline")
 
-# bierzemy ostatni timestamp dla każdego statusu
+        # bierzemy ostatni timestamp dla każdego statusu
         status_times = (
             history
             .groupby("status")["timestamp"]
@@ -118,22 +120,16 @@ if order_id:
             .to_dict()
         )
 
-for i, status in enumerate(STATUS_FLOW):
-    ts = status_times.get(status)
+        # Wyświetlamy statusy w drzewku
+        for i, status in enumerate(STATUS_FLOW):
+            if i < current_index:
+                st.markdown(f"✅ **{status}**")
+            elif i == current_index:
+                st.markdown(f"🔵 **{status}** _(current)_")
+            else:
+                st.markdown(f"⚪ {status}")
 
-    ts_str = (
-        ts.strftime("%d/%m/%Y %H:%M")
-        if pd.notna(ts)
-        else ""
-    )
-
-    if i < current_index:
-        st.markdown(f"✅ *{status}* {ts_str}")
-    elif i == current_index:
-        st.markdown(f"🔵 *{status}* {ts_str} (current)")
-    else:
-        st.markdown(f"⚪ {status}")
-
+        # Przygotowanie przycisku do przejścia do następnego statusu
         next_status = (
             STATUS_FLOW[current_index + 1]
             if current_index + 1 < len(STATUS_FLOW)
@@ -141,11 +137,14 @@ for i, status in enumerate(STATUS_FLOW):
         )
 
         if next_status:
-            if st.button(f"➡️ Move to '{next_status}'"):
+            # <-- dodany unikalny key, żeby uniknąć StreamlitDuplicateElementId
+            if st.button(f"➡️ Move to '{next_status}'", key=f"move_btn_{order_id}_{next_status}"):
                 save_status(order_id, next_status)
                 st.experimental_rerun()
+    
         else:
             st.info("Order not found")
+
 
 
 
