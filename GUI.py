@@ -105,26 +105,35 @@ status_times = {}  # zawsze zdefiniowane
 
 if order_id:
     history = get_order_history(order_id)
+    
+    # wczytujemy również podstawowe info o zamówieniu
+    order_info = get_order_info(order_id)  # funkcja, która zwraca np. 1 wiersz z Excela
+
+    if order_info is not None:
+        project = order_info.get("Project", "")
+        materials = order_info.get("Materials", "")
+        delivery_address = order_info.get("Delivery Adress", "")
+
+        # pasek z informacjami nad timeline
+        st.markdown(
+            f"**Project:** {project} | "
+            f"**Materials:** {materials} | "
+            f"**Delivery Address:** {delivery_address}"
+        )
 
     if not history.empty:
-        # upewniamy się, że timestamp jest datetime
         history["timestamp"] = pd.to_datetime(history["timestamp"])
-
-        # ostatni status
         current_status = history.iloc[-1]["status"]
         current_index = STATUS_FLOW.index(current_status)
 
         st.subheader("Status timeline")
 
-        # przypisujemy ostatni timestamp dla każdego statusu
+        status_times = {}
         for status in STATUS_FLOW:
             ts_rows = history[history["status"] == status]
-            if not ts_rows.empty:
-                status_times[status] = ts_rows.iloc[-1]["timestamp"]
-            else:
-                status_times[status] = None
+            status_times[status] = ts_rows.iloc[-1]["timestamp"] if not ts_rows.empty else None
 
-        # rysujemy timeline jak InPost
+        # timeline jak InPost
         for i, status in enumerate(STATUS_FLOW):
             ts = status_times[status]
             ts_str = ts.strftime("%Y-%m-%d %H:%M") if ts is not None else ""
@@ -136,16 +145,16 @@ if order_id:
             else:
                 st.markdown(f"⚪ {status} - _{ts_str}_")
 
-        # przycisk do przejścia do następnego statusu
+        # przycisk do zmiany statusu
         next_status = STATUS_FLOW[current_index + 1] if current_index + 1 < len(STATUS_FLOW) else None
         if next_status:
-            # unikalny key = order_id + next_status
             if st.button(f"➡️ Move to '{next_status}'", key=f"move_btn_{order_id}_{next_status}"):
                 save_status(order_id, next_status)
                 st.experimental_rerun()
     
         else:
             st.info("Order not found")
+
 
 
 
