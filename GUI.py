@@ -82,7 +82,7 @@ def save_status(order_id, status):
 def get_order_info(order_id):
     """
     Zwraca słownik z podstawowymi informacjami o zamówieniu: 
-    Project, Materials, Delivery Adress.
+    Project, Materials, Delivery Address.
     """
     df = pd.read_excel(EXCEL_FILE, sheet_name=SHEET_NAME, dtype=str)
     
@@ -110,7 +110,7 @@ def get_order_info(order_id):
         return {
             "Project": row.iloc[0].get("project", ""),
             "Materials": row.iloc[0].get("materials", ""),
-            "Delivery Adress": row.iloc[0].get("delivery adress", "")
+            "Delivery Address": row.iloc[0].get("delivery adress", "")
         }
     return None
 
@@ -185,6 +185,7 @@ if order_id:
                     st.experimental_rerun()
     else:
         st.info("Order not found")
+
 
 
 
