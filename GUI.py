@@ -147,7 +147,7 @@ if order_id:
     if order_info is not None:
         project = order_info.get("Project", "")
         materials = order_info.get("Materials", "")
-        delivery_address = order_info.get("Delivery Adress", "")
+        delivery_address = order_info.get("Delivery Address", "")
 
         st.markdown(
             f"**Project:** {project} | "
@@ -185,6 +185,7 @@ if order_id:
                     st.experimental_rerun()
     else:
         st.info("Order not found")
+
 
 
 
