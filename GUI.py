@@ -110,7 +110,7 @@ def get_order_info(order_id):
         return {
             "Project": row.iloc[0].get("project", ""),
             "Materials": row.iloc[0].get("materials", ""),
-            "Delivery Address": row.iloc[0].get("delivery adress", "")
+            "Delivery Address": row.iloc[0].get("delivery address", "")
         }
     return None
 
@@ -185,6 +185,7 @@ if order_id:
                     st.experimental_rerun()
     else:
         st.info("Order not found")
+
 
 
 
