@@ -20,7 +20,8 @@ STATUS_FLOW = [
     "Delivered"
 ]
 
-EXCEL_FILE = r"Client Information App.xlsx"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+EXCEL_FILE = os.path.join(BASE_DIR, "Client Information App.xlsx")
 SHEET_NAME = "CRM main"
 
 # --- UTILS ---
