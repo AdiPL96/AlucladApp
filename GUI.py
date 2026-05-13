@@ -4,8 +4,6 @@ from datetime import datetime
 import os
 import sys
 
-st.write("Python:", sys.version)
-
 STATUS_FLOW = [
     "Add to Production",
     "In production",
