@@ -4,12 +4,6 @@ from datetime import datetime
 import os
 import sys
 
-try:
-    import openpyxl
-    st.success(f"openpyxl OK: {openpyxl.__version__}")
-except Exception as e:
-    st.error(f"openpyxl ERROR: {e}")
-
 st.write("Python:", sys.version)
 
 STATUS_FLOW = [
