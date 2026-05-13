@@ -32,11 +32,11 @@ if not os.path.exists(EXCEL_FILE):
     df = pd.DataFrame(columns=["order_id", "status", "timestamp"])
     df.to_excel(EXCEL_FILE, sheet_name=SHEET_NAME, index=False)
 
-def load_data():
-    df = pd.read_excel(
-        EXCEL_FILE,
-        sheet_name=SHEET_NAME,
-        dtype=str
+df = pd.read_excel(
+    EXCEL_FILE,
+    sheet_name=SHEET_NAME,
+    dtype=str,
+    engine="openpyxl"
     )
 
     # normalizacja nazw kolumn
