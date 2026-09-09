@@ -10,6 +10,7 @@ st.set_page_config(
 )
 
 STATUS_FLOW = [
+    "Awaiting",
     "Add to Production",
     "In production",
     "In PPC",
@@ -163,7 +164,8 @@ def get_order_info(order_id):
         "Project": first_non_empty("project"),
         "Materials": first_non_empty("materials"),
         "Delivery Address": first_non_empty("delivery address"),
-        "Estimated Delivery Date": first_non_empty("estimated delivery date")
+        "Estimated Delivery Date": first_non_empty("estimated delivery date"),
+        "Awaiting Reason": first_non_empty("awaiting reason")
     }
 
 
@@ -257,6 +259,8 @@ if order_id:
         delivery_address = clean_display_value(order_info.get("Delivery Address"))
         estimated_delivery_date = clean_display_value(
             order_info.get("Estimated Delivery Date")
+        awaiting_reason = clean_display_value(
+            order_info.get("Awaiting Reason")
         )
 
         st.markdown("---")
@@ -277,6 +281,9 @@ if order_id:
             st.markdown("  \n".join(info_lines))
 
         current_status = get_current_status(order_id)
+        
+        if current_status == "Awaiting" and awaiting_reason:
+            st.warning(f"⏳ Awaiting: {awaiting_reason}")
 
         if not current_status:
             st.info("No status information is available for this order yet.")
