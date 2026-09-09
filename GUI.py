@@ -258,7 +258,7 @@ if order_id:
         materials = clean_display_value(order_info.get("Materials"))
         delivery_address = clean_display_value(order_info.get("Delivery Address"))
         estimated_delivery_date = clean_display_value(
-            order_info.get("Estimated Delivery Date")
+            order_info.get("Estimated Delivery Date"))
         awaiting_reason = clean_display_value(
             order_info.get("Awaiting Reason")
         )
